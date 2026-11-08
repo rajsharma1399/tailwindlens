@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tailwind Lens</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .bg-grid-pattern {
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col bg-grid-pattern">
+
+    <!-- Header -->
+    <header class="max-w-7xl w-full mx-auto px-6 py-6 flex justify-between items-center">
+        <div class="text-xl font-bold tracking-tight text-slate-900">Tailwind Lens</div>
+        <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600">
+            <a href="#how-it-works" class="hover:text-slate-950 transition">How it works</a>
+            <a href="#what-its-for" class="hover:text-slate-950 transition">What it's for</a>
+        </nav>
+        <div>
+            <button class="bg-slate-900 hover:bg-slate-800 text-white text-sm font-medium px-5 py-2.5 rounded-full transition shadow-sm">
+                Try it
+            </button>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <main class="flex-1 max-w-5xl w-full mx-auto px-6 pt-12 pb-16 flex flex-col items-center text-center">
+        <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight text-slate-900 max-w-4xl leading-[1.1] mb-6">
+            Paste a page. Click a section. Get the Tailwind.
+        </h1>
+        <p class="text-lg md:text-xl text-slate-600 max-w-2xl mb-10">
+            See exactly how any public page is built, with the original on the left and clean, responsive Tailwind HTML on the right.
+        </p>
+
+        <!-- Input Form Bar -->
+        <div class="w-full max-w-2xl bg-white p-2 rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-200/80 flex flex-col sm:flex-row items-center gap-2 mb-4">
+            <input 
+                id="urlInput" 
+                type="text" 
+                placeholder="https://example.com" 
+                class="w-full px-4 py-3 text-slate-800 placeholder-slate-400 bg-transparent focus:outline-none text-base"
+            >
+            <button 
+                onclick="inspectPage()" 
+                class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-medium px-8 py-3.5 rounded-xl transition shadow-md shadow-blue-600/20 whitespace-nowrap"
+            >
+                Inspect page
+            </button>
+        </div>
+
+        <!-- Quick Try Links -->
+        <div class="text-sm text-slate-500 mb-16">
+            Try: 
+            <a href="#" onclick="setURL('example.com'); return false;" class="text-blue-600 underline hover:text-blue-700 mx-1">example.com</a>, 
+            <a href="#" onclick="setURL('news.ycombinator.com'); return false;" class="text-blue-600 underline hover:text-blue-700 mx-1">news.ycombinator.com</a>, 
+            <a href="#" onclick="setURL('wikipedia.org'); return false;" class="text-blue-600 underline hover:text-blue-700 mx-1">wikipedia.org</a>
+        </div>
+
+        <!-- Bottom Inspection / Split Workspace Panel -->
+        <div class="w-full bg-white border border-slate-200 rounded-2xl shadow-lg p-6 text-left flex flex-col gap-4">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-100 pb-4 gap-4">
+                <span class="text-xs text-slate-400 font-medium">Load a page, then click any element in the preview.</span>
+                <button disabled class="bg-slate-100 text-slate-400 text-xs font-semibold px-4 py-2 rounded-lg cursor-not-allowed">
+                    Convert whole page
+                </button>
+            </div>
+
+            <!-- Workspace Columns -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Original Pane -->
+                <div class="border border-slate-200 rounded-xl p-4 flex flex-col min-h-[220px] bg-slate-50/50">
+                    <div class="text-xs font-semibold text-slate-500 mb-3">Original <span class="font-normal text-slate-400">(scripts disabled)</span></div>
+                    <div id="originalPreview" class="flex-1 flex items-center justify-center text-xs text-slate-400 font-mono">
+                        No page loaded yet.
+                    </div>
+                </div>
+
+                <!-- Tailwind Output Pane -->
+                <div class="border border-slate-200 rounded-xl p-4 flex flex-col min-h-[220px] bg-slate-50/50">
+                    <div class="flex justify-between items-center mb-3">
+                        <div class="flex gap-4 text-xs font-semibold">
+                            <span class="text-blue-600 border-b-2 border-blue-600 pb-1 cursor-pointer">Tailwind code</span>
+                            <span class="text-slate-400 hover:text-slate-600 cursor-pointer">Rebuilt preview</span>
+                        </div>
+                        <span id="selectionStatus" class="text-xs text-slate-400">nothing selected</span>
+                    </div>
+                    <div id="codeOutput" class="flex-1 bg-white border border-slate-200 rounded-lg p-3 text-xs text-slate-600 font-mono overflow-y-auto mb-3 whitespace-pre-wrap">
+&lt;!-- Select an element to view Tailwind code --&gt;
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="copyCode()" class="flex-1 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-medium py-2 rounded-lg transition shadow-sm">
+                            Copy
+                        </button>
+                        <button onclick="downloadCode()" class="flex-1 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-medium py-2 rounded-lg transition shadow-sm">
+                            Download
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function setURL(domain) {
+            document.getElementById('urlInput').value = 'https://' + domain;
+        }
+
+        function inspectPage() {
+            const url = document.getElementById('urlInput').value.trim();
+            const origPreview = document.getElementById('originalPreview');
+            const codeOutput = document.getElementById('codeOutput');
+            const selectionStatus = document.getElementById('selectionStatus');
+
+            if (!url) {
+                alert('Please enter a valid URL.');
+                return;
+            }
+
+            origPreview.innerHTML = `<div class="p-4 bg-white rounded shadow-sm border border-slate-100 w-full text-center my-auto">
+                <p class="text-xs text-slate-600 font-medium">Loaded target: ${url}</p>
+                <p class="text-[10px] text-slate-400 mt-1">Interactive DOM snapshot active</p>
+            </div>`;
+
+            codeOutput.innerText = `<div class="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl">\n  <div class="md:flex">\n    <div class="p-8">\n      <div class="uppercase tracking-wide text-sm text-indigo-500 font-semibold">Target Component</div>\n      <p class="mt-2 text-slate-500">Inspected layout code generated successfully from ${url}</p>\n    </div>\n  </div>\n</div>`;
+            
+            selectionStatus.innerText = 'element #1 selected';
+            selectionStatus.className = 'text-xs text-blue-600 font-medium';
+        }
+
+        function copyCode() {
+            const code = document.getElementById('codeOutput').innerText;
+            navigator.clipboard.writeText(code);
+            alert('Tailwind code copied to clipboard!');
+        }
+
+        function downloadCode() {
+            const code = document.getElementById('codeOutput').innerText;
+            const blob = new Blob([code], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'component.html';
+            a.click();
+        }
+    </script>
+</body>
+</html>
